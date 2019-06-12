@@ -10,7 +10,7 @@ class TodoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Todo List',
+      title: 'Flutodo',
       home: TodoList(),
     );
   }
@@ -29,8 +29,13 @@ class TodoListState extends State<TodoList> {
   final databaseHelper = DatabaseHelper.instance;
   List<TodoTask> _todoItems = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _queryAllTodoItems();
+  }
+
   Widget _buildTodoList() {
-    _queryAll();
     return new ListView.separated(
             separatorBuilder: (context, index) =>
                     Divider(
@@ -40,20 +45,29 @@ class TodoListState extends State<TodoList> {
             itemCount: _todoItems.length,
             itemBuilder: (context, index) {
               if (index < _todoItems.length) {
-                return _buildTodoItem(_todoItems[index]);
+                return _buildTodoItem(index, _todoItems[index]);
               }
             }
     );
   }
 
-  Widget _buildTodoItem(TodoTask todoItem) {
-    return new ListTile(
-      title: new Text(todoItem.content),
-      onTap: () => _promptRemoveTodoTask(todoItem),
+  Widget _buildTodoItem(int index, TodoTask todoItem) {
+    return Dismissible(
+      background: Container(color: Colors.red),
+      key: Key(todoItem.id.toString()),
+      onDismissed: (direction) {
+        setState(() {
+          _todoItems.remove(todoItem);
+        });
+        _promptRemoveTodoTask(index, todoItem);
+      },
+      child: new ListTile(
+        title: new Text(todoItem.content),
+      ),
     );
   }
 
-  _promptRemoveTodoTask(TodoTask todoItem) {
+  _promptRemoveTodoTask(int index, TodoTask todoItem) {
     showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -62,7 +76,14 @@ class TodoListState extends State<TodoList> {
                 actions: <Widget>[
                   new FlatButton(
                     child: new Text('CANCEL'),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () {
+                      setState(() {
+                        if (!_todoItems.contains(todoItem)) {
+                          _todoItems.insert(index, todoItem);
+                        }
+                      });
+                      Navigator.of(context).pop();
+                    },
                   ),
                   new FlatButton(
                     child: new Text('DELETE'),
@@ -122,7 +143,7 @@ class TodoListState extends State<TodoList> {
           );
         }
       )
-    );
+    ).then((value) => _queryAllTodoItems());
   }
 
   // Database related methods
@@ -153,10 +174,10 @@ class TodoListState extends State<TodoList> {
   }
 
   Future<void> _refreshList() async {
-    _queryAll();
+    _queryAllTodoItems();
   }
 
-  void _queryAll() async {
+  void _queryAllTodoItems() async {
     final shouldRefresh = await _shouldRefreshInfo();
     if (!shouldRefresh) {
       return;
