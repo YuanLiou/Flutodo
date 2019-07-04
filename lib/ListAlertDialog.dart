@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/CustomAlertDialog.dart';
+import 'package:flutter_todo/pair.dart';
 
 class ListAlertDialog extends StatelessWidget {
     ListAlertDialog({Key key, @required this.values}) : super(key: key);
@@ -20,13 +21,16 @@ class ListAlertDialog extends StatelessWidget {
 
     _buildListItems(BuildContext context) {
         List<Widget> items = [];
-        values.forEach((String value) =>
-                items.add(ListTile(
+        for (int i = 0; i < values.length; i++) {
+            var value = values[i];
+            items.add(ListTile(
                     title: Text(value),
                     onTap: () {
-                        Navigator.of(context).pop(value);
-                    },
-                )));
+                        Navigator.of(context).pop(Pair(i, value));
+                    }
+            )
+            );
+        }
         return items;
     }
 
