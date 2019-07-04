@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/DatabaseHelper.dart';
 import 'package:flutter_todo/ListAlertDialog.dart';
+import 'package:flutter_todo/pair.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'TodoTask.dart';
 
@@ -65,14 +66,25 @@ class TodoListState extends State<TodoList> {
       child: new ListTile(
         title: new Text(todoItem.content),
         onTap: () {
-//          _openEditTodoScreen(todoItem);
           showDialog(
             context: context,
             builder: (context) {
               List<String> values = ["Edit", "Delete", "Cancel"];
               return ListAlertDialog(values: values);
             }).then((callbackValue) {
-              print(callbackValue);
+              var pair = callbackValue as Pair;
+              var dialogMenuIndex = pair.left as int;
+
+              switch (dialogMenuIndex) {
+                case 0:
+                  _openEditTodoScreen(todoItem);
+                  break;
+                case 1:
+                  _promptRemoveTodoTask(index, todoItem);
+                  break;
+                case 2:
+                  break;
+              }
           });
         },
       ),
