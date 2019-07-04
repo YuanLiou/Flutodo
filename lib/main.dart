@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/DatabaseHelper.dart';
+import 'package:flutter_todo/ListAlertDialog.dart';
+import 'package:flutter_todo/pair.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'TodoTask.dart';
 
@@ -63,6 +65,28 @@ class TodoListState extends State<TodoList> {
       },
       child: new ListTile(
         title: new Text(todoItem.content),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              List<String> values = ["Edit", "Delete", "Cancel"];
+              return ListAlertDialog(values: values);
+            }).then((callbackValue) {
+              var pair = callbackValue as Pair;
+              var dialogMenuIndex = pair.left as int;
+
+              switch (dialogMenuIndex) {
+                case 0:
+                  _openEditTodoScreen(todoItem);
+                  break;
+                case 1:
+                  _promptRemoveTodoTask(index, todoItem);
+                  break;
+                case 2:
+                  break;
+              }
+          });
+        },
       ),
     );
   }
@@ -110,34 +134,52 @@ class TodoListState extends State<TodoList> {
         ),
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _openAddTodoScreen,
+        onPressed: () {
+          _openEditTodoScreen(null);
+        },
         tooltip: 'add Task',
         child: new Icon(Icons.add),
       ),
     );
   }
 
-  void _openAddTodoScreen() {
+  void _openEditTodoScreen(TodoTask todoTask) {
+    TextEditingController textEditingController;
+    String title;
+    if (todoTask != null) {
+      textEditingController = new TextEditingController(text: todoTask.content);
+      title = "Edit task";
+    } else {
+      textEditingController = new TextEditingController();
+      title = "Add new task";
+    }
+
     Navigator.of(context).push(
       new MaterialPageRoute(
         builder: (context) {
           return Scaffold(
             appBar: AppBar(
-              title: Text("Add new task"),
+              title: Text(title),
             ),
             body: new TextField(
+              controller: textEditingController,
               autofocus: true,
               decoration: new InputDecoration(
                 hintText: 'Enter task to save',
                 contentPadding: const EdgeInsets.all(16.0)
               ),
               onSubmitted: (value) async {
-                if (value.isNotEmpty) {
-                  await _insert(value);
-                  Navigator.pop(context);
-                } else {
+                if (value.isEmpty) {
                   Fluttertoast.showToast(msg: "Your task is empty.");
+                  return;
                 }
+
+                if (todoTask == null) {
+                  await _insert(value);
+                } else {
+                  await _update(todoTask, value);
+                }
+                Navigator.pop(context);
               },
             ),
           );
@@ -156,21 +198,29 @@ class TodoListState extends State<TodoList> {
       index = lastInsertOne.id;
     }
 
-    DateTime now = DateTime.now();
-    String timestamps = now.toIso8601String();
-
     Map<String, dynamic> row = {
       DatabaseHelper.columnId : (index + 1),
       DatabaseHelper.columnContent : content,
-      DatabaseHelper.columnUpdateTime : timestamps
+      DatabaseHelper.columnUpdateTime : _getCurrentTimeStamp()
     };
     final id = await databaseHelper.insert(row);
     print('inserted row id: $id');
   }
 
-  Future<bool> _shouldRefreshInfo() async {
-    final rowsCounts = await databaseHelper.queryRowCount();
-    return (rowsCounts > _todoItems.length);
+  Future<void> _update(TodoTask todoTask, String updateContent) async {
+    Map<String, dynamic> updateItem = {
+      DatabaseHelper.columnId : todoTask.id,
+      DatabaseHelper.columnUpdateTime : _getCurrentTimeStamp(),
+      DatabaseHelper.columnContent : updateContent
+    };
+
+    final updateItemId = await databaseHelper.update(updateItem);
+    print('updated item id: $updateItemId');
+  }
+
+  String _getCurrentTimeStamp() {
+    DateTime now = DateTime.now();
+    return now.toIso8601String();
   }
 
   Future<void> _refreshList() async {
@@ -178,11 +228,6 @@ class TodoListState extends State<TodoList> {
   }
 
   void _queryAllTodoItems() async {
-    final shouldRefresh = await _shouldRefreshInfo();
-    if (!shouldRefresh) {
-      return;
-    }
-
     final allRows = await databaseHelper.queryAllRows();
     print('query all rows');
     setState(() {
