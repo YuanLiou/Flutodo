@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_todo/DatabaseHelper.dart';
 import 'package:flutter_todo/ListAlertDialog.dart';
 import 'package:flutter_todo/pair.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'TodoTask.dart';
+import 'app_localizations.dart';
 
 void main() => runApp(TodoApp());
 
@@ -13,6 +16,32 @@ class TodoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Flutodo',
+      supportedLocales: [
+        Locale('en', 'US'),
+        Locale('zh', 'TW'),
+        Locale.fromSubtags(languageCode: 'zh'),
+        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW')
+      ],
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        if (locale == null) {
+          return supportedLocales.first;
+        }
+
+        for (var supportLocale in supportedLocales) {
+          if (supportLocale.languageCode == locale.languageCode &&
+                  supportLocale.countryCode == locale.countryCode) {
+            return supportLocale;
+          }
+        }
+        // fallback to first supported language
+        return supportedLocales.first;
+      },
       home: TodoList(),
     );
   }
@@ -27,7 +56,6 @@ class TodoList extends StatefulWidget {
 }
 
 class TodoListState extends State<TodoList> {
-
   final databaseHelper = DatabaseHelper.instance;
   List<TodoTask> _todoItems = [];
 
@@ -69,7 +97,10 @@ class TodoListState extends State<TodoList> {
           showDialog(
             context: context,
             builder: (context) {
-              List<String> values = ["Edit", "Delete", "Cancel"];
+              String editTitle = AppLocalizations.of(context).translate("action_edit");
+              String doneTitle = AppLocalizations.of(context).translate("action_done");
+              String cancelTitle = AppLocalizations.of(context).translate("action_cancel");
+              List<String> values = [editTitle, doneTitle, cancelTitle];
               return ListAlertDialog(values: values);
             }).then((callbackValue) {
               var pair = callbackValue as Pair;
@@ -95,11 +126,13 @@ class TodoListState extends State<TodoList> {
     showDialog(
             context: context,
             builder: (BuildContext context) {
+              String message = AppLocalizations.of(context).translate("message_done_task");
+              message = message.replaceFirst("{placeholder01}", todoItem.content);
               return new AlertDialog(
-                title: new Text('Mark ${todoItem.content} as done?'),
+                title: new Text(message),
                 actions: <Widget>[
                   new FlatButton(
-                    child: new Text('CANCEL'),
+                    child: new Text(AppLocalizations.of(context).translate("action_cancel")),
                     onPressed: () {
                       setState(() {
                         if (!_todoItems.contains(todoItem)) {
@@ -110,7 +143,7 @@ class TodoListState extends State<TodoList> {
                     },
                   ),
                   new FlatButton(
-                    child: new Text('DELETE'),
+                    child: new Text(AppLocalizations.of(context).translate("action_done")),
                     onPressed: () {
                       _delete(todoItem);
                       Navigator.of(context).pop();
@@ -123,9 +156,11 @@ class TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
+    String appTitle = AppLocalizations.of(context).translate("app_name");
+    String toolTipAddItem = AppLocalizations.of(context).translate("tooltip_add_task");
     return new Scaffold(
       appBar: new AppBar(
-        title: Text("Flutter Todo")
+        title: Text(appTitle)
       ),
       body: new Container(
         child: RefreshIndicator(
@@ -137,7 +172,7 @@ class TodoListState extends State<TodoList> {
         onPressed: () {
           _openEditTodoScreen(null);
         },
-        tooltip: 'add Task',
+        tooltip: toolTipAddItem,
         child: new Icon(Icons.add),
       ),
     );
@@ -146,12 +181,14 @@ class TodoListState extends State<TodoList> {
   void _openEditTodoScreen(TodoTask todoTask) {
     TextEditingController textEditingController;
     String title;
+    String hint = AppLocalizations.of(context).translate("hint_task_name_edit_text");
+    String emptyErrorMessage = AppLocalizations.of(context).translate("toast_task_is_empty");
     if (todoTask != null) {
       textEditingController = new TextEditingController(text: todoTask.content);
-      title = "Edit task";
+      title = AppLocalizations.of(context).translate("title_edit_task");
     } else {
       textEditingController = new TextEditingController();
-      title = "Add new task";
+      title = AppLocalizations.of(context).translate("title_add_task");
     }
 
     Navigator.of(context).push(
@@ -165,12 +202,12 @@ class TodoListState extends State<TodoList> {
               controller: textEditingController,
               autofocus: true,
               decoration: new InputDecoration(
-                hintText: 'Enter task to save',
+                hintText: hint,
                 contentPadding: const EdgeInsets.all(16.0)
               ),
               onSubmitted: (value) async {
                 if (value.isEmpty) {
-                  Fluttertoast.showToast(msg: "Your task is empty.");
+                  Fluttertoast.showToast(msg: emptyErrorMessage);
                   return;
                 }
 
@@ -248,4 +285,3 @@ class TodoListState extends State<TodoList> {
   }
 
 }
-
