@@ -1,0 +1,13 @@
+{
+  "app_name": "Flutodo",
+  "title_main_page": "Flutter Todo",
+  "action_edit": "Edit",
+  "action_done": "Done",
+  "action_cancel": "Cancel",
+  "message_done_task": "Mark {placeholder01} as done?",
+  "tooltip_add_task": "Add Task",
+  "title_edit_task": "Edit Task",
+  "title_add_task": "Add New Task",
+  "hint_task_name_edit_text": "Enter task to bo done",
+  "toast_task_is_empty": "The task is empty"
+}
