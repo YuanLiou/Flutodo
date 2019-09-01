@@ -1,16 +1,25 @@
-# flutter_todo
+# Flutodo
+<img src="https://github.com/YuanLiou/Flutodo/blob/master/assets/images/flutodo_icon.png" height="15%" width="15%" /> <br>
+A fully function todo list powered by Flutter
 
-A new Flutter project.
+# What it can do?
 
-## Getting Started
+- [x] save task into device
+- [x] multi language support (current support: Traditional Chinese, English)
+- [x] swipe to make a task done
 
-This project is a starting point for a Flutter application.
+more to come...
 
-A few resources to get you started if this is your first Flutter project:
+# Screenshots (in Traditional Chinese language)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+| Screenshot        |            |
+| ------------- |:-------------:|
+| <img src="https://user-images.githubusercontent.com/4803452/64071829-3ad9a600-ccb5-11e9-85c6-f2632286a2c2.png" /> | <img src="https://user-images.githubusercontent.com/4803452/64071836-6bb9db00-ccb5-11e9-9477-e8a4233ec21d.png" /> |
+| <img src="https://user-images.githubusercontent.com/4803452/64071837-868c4f80-ccb5-11e9-8cee-aa9fdd8ff3f7.png" /> | <img src="https://user-images.githubusercontent.com/4803452/64071853-e97de680-ccb5-11e9-897c-9394ee67776e.png" /> |
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+# How to build myself
+
+- clone this project 
+- open terminal, change directory to this project
+- simply use `flutter run` to run this project on iOS or Android
+
