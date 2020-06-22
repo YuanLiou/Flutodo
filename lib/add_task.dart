@@ -113,15 +113,13 @@ class _AddTaskState extends State<AddTaskPage> {
       return;
     }
 
-    if (todoTask.content == value) {
-      return;
-    }
-
     FocusScope.of(context).requestFocus(FocusNode()); // hide keyboard
     if (todoTask == null) {
       await _insert(value);
     } else {
-      await _update(todoTask, value);
+      if (todoTask.content != value) {
+        await _update(todoTask, value);
+      }
     }
     Navigator.pop(context);
   }
