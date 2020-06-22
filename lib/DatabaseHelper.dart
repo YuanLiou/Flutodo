@@ -81,7 +81,7 @@ class DatabaseHelper {
   Future<TodoTask> queryLastItem() async {
     Database database = await instance.database;
     final String sql = '''
-      SELECt * FROM $table
+      SELECT * FROM $table
       ORDER BY $columnId DESC LIMIT 1
     ''';
     final data = await database.rawQuery(sql);
