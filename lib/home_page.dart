@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_todo/DatabaseHelper.dart';
 import 'package:flutter_todo/ListAlertDialog.dart';
 import 'package:flutter_todo/add_task.dart';
+import 'package:flutter_todo/notification_post_page.dart';
 import 'package:flutter_todo/pair.dart';
 import 'app_localizations.dart';
 import 'TodoTask.dart';
@@ -132,13 +133,27 @@ class _TodoListState extends State<TodoList> {
                   fit: BoxFit.cover
                 ),
               ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.settings_applications,
+                    color: Colors.white
+                  ),
+                  onPressed: () {
+                    _navToNotificationPostPage();
+                  },
+                )
+              ],
             )
           ];
         },
         body: new Container(
+          decoration: BoxDecoration(
+            color: Colors.white
+          ),
           child: RefreshIndicator(
             child: _buildTodoList(),
-            onRefresh: _refreshList,
+            onRefresh: _refreshList
           ),
         ),
       ),
@@ -160,6 +175,16 @@ class _TodoListState extends State<TodoList> {
                     }
             )
     ).then((value) => _queryAllTodoItems());
+  }
+
+  void _navToNotificationPostPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+              builder: (context) {
+                return new NotificationPostPage();
+              }
+      )
+    );
   }
 
   // Database related methods
