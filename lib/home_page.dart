@@ -117,13 +117,29 @@ class _TodoListState extends State<TodoList> {
     String appTitle = AppLocalizations.of(context).translate("app_name");
     String toolTipAddItem = AppLocalizations.of(context).translate("tooltip_add_task");
     return new Scaffold(
-      appBar: new AppBar(
-              title: Text(appTitle)
-      ),
-      body: new Container(
-        child: RefreshIndicator(
-          child: _buildTodoList(),
-          onRefresh: _refreshList,
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget> [
+            SliverAppBar(
+              expandedHeight: 200.0,
+              floating: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(appTitle),
+                centerTitle: true,
+                background: Image.asset(
+                  "assets/images/watercolour.jpg",
+                  fit: BoxFit.cover
+                ),
+              ),
+            )
+          ];
+        },
+        body: new Container(
+          child: RefreshIndicator(
+            child: _buildTodoList(),
+            onRefresh: _refreshList,
+          ),
         ),
       ),
       floatingActionButton: new FloatingActionButton(
@@ -152,7 +168,7 @@ class _TodoListState extends State<TodoList> {
     _queryAllTodoItems();
   }
 
-  _queryAllTodoItems() async {
+  Future<void> _queryAllTodoItems() async {
     final allRows = await databaseHelper.queryAllRows();
     print('query all rows');
     setState(() {
@@ -164,7 +180,7 @@ class _TodoListState extends State<TodoList> {
     });
   }
 
-  _delete(TodoTask todoTask) async {
+  Future<void> _delete(TodoTask todoTask) async {
     final deletedRow = await databaseHelper.delete(todoTask.id);
     print('deleted id is $deletedRow');
     setState(() {
