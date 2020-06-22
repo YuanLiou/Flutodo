@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_todo/DatabaseHelper.dart';
 import 'package:flutter_todo/ListAlertDialog.dart';
 import 'package:flutter_todo/pair.dart';
@@ -283,5 +282,4 @@ class TodoListState extends State<TodoList> {
       _todoItems.remove(todoTask);
     });
   }
-
 }
