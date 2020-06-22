@@ -36,6 +36,15 @@ class _AddTaskState extends State<AddTaskPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () {
+              String result = textEditingController?.text ?? "";
+              _doResultHandling(context, result);
+            },
+          )
+        ],
       ),
       body: new TextField(
         controller: textEditingController,
@@ -43,20 +52,7 @@ class _AddTaskState extends State<AddTaskPage> {
         decoration: new InputDecoration(
                 hintText: hint,
                 contentPadding: const EdgeInsets.all(16.0)
-        ),
-        onSubmitted: (value) async {
-          if (value.isEmpty) {
-            Fluttertoast.showToast(msg: emptyErrorMessage);
-            return;
-          }
-
-          if (todoTask == null) {
-            await _insert(value);
-          } else {
-            await _update(todoTask, value);
-          }
-          Navigator.pop(context);
-        },
+        )
       ),
     );
   }
@@ -79,6 +75,8 @@ class _AddTaskState extends State<AddTaskPage> {
     this.emptyErrorMessage = emptyErrorMessage;
     this.textEditingController = textEditingController;
   }
+
+  // Database related APIs
 
   Future<void> _insert(String content) async {
     final rowsCounts = await databaseHelper.queryRowCount();
@@ -107,6 +105,25 @@ class _AddTaskState extends State<AddTaskPage> {
 
     final updateItemId = await databaseHelper.update(updateItem);
     print('updated item id: $updateItemId');
+  }
+
+  _doResultHandling(BuildContext context, String value) async {
+    if (value.isEmpty) {
+      Fluttertoast.showToast(msg: emptyErrorMessage);
+      return;
+    }
+
+    if (todoTask.content == value) {
+      return;
+    }
+
+    FocusScope.of(context).requestFocus(FocusNode()); // hide keyboard
+    if (todoTask == null) {
+      await _insert(value);
+    } else {
+      await _update(todoTask, value);
+    }
+    Navigator.pop(context);
   }
 
   String _getCurrentTimeStamp() {
