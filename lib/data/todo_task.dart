@@ -1,9 +1,12 @@
-import 'package:flutter_todo/DatabaseHelper.dart';
+import 'package:flutter_todo/data/database_helper.dart';
 
 class TodoTask {
     int id;
     String content;
     DateTime timeStamps;
+
+    int notificationId;
+    DateTime notificationDateTime;
 
     TodoTask(this.id, this.content, this.timeStamps);
 
@@ -13,5 +16,10 @@ class TodoTask {
 
         String rawDateTime = json[DatabaseHelper.columnUpdateTime];
         this.timeStamps = DateTime.parse(rawDateTime);
+    }
+
+    void setNotification(int id, DateTime dateTime) {
+      this.notificationId = notificationId;
+      this.notificationDateTime = dateTime;
     }
 }

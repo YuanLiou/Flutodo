@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_todo/DatabaseHelper.dart';
+import 'package:flutter_todo/data/database_helper.dart';
 import 'app_localizations.dart';
-import 'TodoTask.dart';
+import 'data/todo_task.dart';
 
 class AddTaskPage extends StatefulWidget {
   final TodoTask todoTask;

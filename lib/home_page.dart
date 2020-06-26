@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo/DatabaseHelper.dart';
+import 'package:flutter_todo/data/database_helper.dart';
 import 'package:flutter_todo/ListAlertDialog.dart';
 import 'package:flutter_todo/add_task.dart';
 import 'package:flutter_todo/notification_post_page.dart';
 import 'package:flutter_todo/pair.dart';
 import 'app_localizations.dart';
-import 'TodoTask.dart';
+import 'data/todo_task.dart';
 
 class TodoList extends StatefulWidget {
   @override
@@ -134,14 +134,15 @@ class _TodoListState extends State<TodoList> {
                 ),
               ),
               actions: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.settings_applications,
-                    color: Colors.white
+                Visibility(
+                  child: IconButton(
+                    icon:
+                        Icon(Icons.settings_applications, color: Colors.white),
+                    onPressed: () {
+                      _navToNotificationPostPage();
+                    },
                   ),
-                  onPressed: () {
-                    _navToNotificationPostPage();
-                  },
+                  visible: false,
                 )
               ],
             )
