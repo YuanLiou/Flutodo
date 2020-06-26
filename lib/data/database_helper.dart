@@ -19,11 +19,12 @@ class DatabaseHelper {
   static const columnNotificationId = '_notification_id';
   static const columnNotificationDateTime = '_notification_datetime';
 
+  // List<List<String>>
   static const migrationScript = [
-    '''
-    ALTER TABLE $table ADD COLUMN $columnNotificationId INTEGER;
-    ALTER TABLE $table ADD COLUMN $columnNotificationDateTime TEXT;
-    '''
+      [
+        "ALTER TABLE $table ADD COLUMN $columnNotificationId INTEGER",
+        "ALTER TABLE $table ADD COLUMN $columnNotificationDateTime TEXT"
+      ]
   ];
 
   // singleton class
@@ -48,7 +49,11 @@ class DatabaseHelper {
             onCreate: _onCreate,
             onUpgrade: (Database database, int oldVersion, int newVersion) async {
               for (var i = oldVersion - 1; i < newVersion - 1; i++) {
-                await database.execute(migrationScript[i]);
+                List<String> scripts = migrationScript[i];
+                for (String script in scripts) {
+                  print(script);
+                  await database.execute(script);
+                }
               }
             }
     );
@@ -59,7 +64,9 @@ class DatabaseHelper {
      CREATE TABLE $table (
        $columnId INTEGER PRIMARY KEY,
        $columnContent TEXT,
-       $columnUpdateTime TEXT NOT NULL
+       $columnUpdateTime TEXT NOT NULL,
+       $columnNotificationId INTEGER,
+       $columnNotificationDateTime TEXT
      )
     ''');
   }

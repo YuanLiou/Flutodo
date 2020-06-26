@@ -10,5 +10,9 @@
   "title_add_task": "Add New Task",
   "hint_task_name_edit_text": "Enter task to bo done",
   "toast_task_is_empty": "The task is empty",
-  "only_for_debug_text": "Attention! Only For test purpose"
+  "only_for_debug_text": "Attention! Only For test purpose",
+  "add_new_task": "Input your task content",
+  "setup_notification": "Notification",
+  "setup_notification_datetime": "Set a date and time for this to do task.",
+  "cancel_notification": "Cancel notification"
 }

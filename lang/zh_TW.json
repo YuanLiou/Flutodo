@@ -8,7 +8,11 @@
   "tooltip_add_task": "加入任務",
   "title_edit_task": "編輯待辦事項",
   "title_add_task": "加入新的待辦事項",
-  "hint_task_name_edit_text": "輸入代辦事項內容",
+  "hint_task_name_edit_text": "代辦事項內容",
   "toast_task_is_empty": "你沒有輸入任何東西",
-  "only_for_debug_text": "注意！只供測試使用"
+  "only_for_debug_text": "注意！只供測試使用",
+  "add_new_task": "輸入待辦事項內容",
+  "setup_notification": "通知提醒",
+  "setup_notification_datetime": "設定提醒日期與時間",
+  "cancel_notification": "取消通知"
 }

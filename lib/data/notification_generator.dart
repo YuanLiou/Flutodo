@@ -20,9 +20,9 @@ class NotificationGenerator {
         await notificationPlugin.initialize(notificationInitSettings, onSelectNotification: selectNotificationCallback);
     }
 
-    void pushNotification(int id, String title, String message) async {
+    void pushNotification(int id, DateTime scheduledDate, String title, String message) async {
 //        await _generateNotification(id, title, message);
-        await _generateScheduledNotification(id, title, message);
+        await _generateScheduledNotification(id, scheduledDate, title, message);
     }
 
     void cancelNotification(int id) async {
@@ -34,9 +34,8 @@ class NotificationGenerator {
         await notificationPlugin.show(id, title, message, notificationDetails);
     }
 
-    Future<void> _generateScheduledNotification(int id, String title, String message) async {
+    Future<void> _generateScheduledNotification(int id, DateTime scheduledDate, String title, String message) async {
         NotificationDetails notificationDetails = _generateNotificationDetails();
-        DateTime scheduledDate = DateTime.now().add(Duration(seconds: 10));
         await notificationPlugin.schedule(id, title, message, scheduledDate, notificationDetails, androidAllowWhileIdle: true);
     }
 

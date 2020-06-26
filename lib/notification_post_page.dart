@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/app_localizations.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_todo/data/notification_generator.dart';
 
 class NotificationPostPage extends StatefulWidget {
@@ -56,7 +55,7 @@ class _NotificationPostPageState extends State<NotificationPostPage> {
                                     bottom: 16
                             ),
                             onPressed: () {
-                                notificationGenerator.pushNotification(_notificationId, "Hello", "This is from my notification generator.");
+//                                notificationGenerator.pushNotification(_notificationId, "Hello", "This is from my notification generator.");
                             },
                             child: const Text("Push Notification")
                     ),

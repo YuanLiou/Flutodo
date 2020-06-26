@@ -16,6 +16,14 @@ class TodoTask {
 
         String rawDateTime = json[DatabaseHelper.columnUpdateTime];
         this.timeStamps = DateTime.parse(rawDateTime);
+
+        String notificationDateTime = json[DatabaseHelper.columnNotificationDateTime];
+        if (notificationDateTime == null) {
+            return;
+        }
+
+        this.notificationDateTime = DateTime.parse(notificationDateTime);
+        this.notificationId = json[DatabaseHelper.columnNotificationId];
     }
 
     void setNotification(int id, DateTime dateTime) {
